@@ -4,6 +4,25 @@ window.App = {};
 
         var currentDate = new Date();
         var $calendar;
+        var domParts = (function(){
+            var monthParts = $("<div class='cal-month'></div>");
+            var weekParts  = $("<ul class=cal-week></ul>");
+            var dayParts   = $("<li class=cal-day></li>");
+
+            return {
+                month: function(){
+                    return monthParts.clone();
+                },
+                week: function(){
+                    return weekParts.clone();
+                },
+                day: function(day){
+                    var parts = dayParts.clone();
+                    parts.html(day);
+                    return parts;
+                }
+            }
+        })();
 
         this.attachCalendar = function($cal, date){
             $calendar = $cal;
@@ -14,6 +33,14 @@ window.App = {};
         };
         this.setCurrentDate = function(date){
             this.currentDate = date;
+        };
+        this.showNextMonth = function(){
+            $calendar.find(".cal-month").remove();
+            this.attachCalendar($calendar, setNextMonth());
+        };
+        this.showPrevMonth = function(){
+            $calendar.find(".cal-month").remove();
+            this.attachCalendar($calendar, setPrevMonth());
         };
         this.currentYear = function(){
             return currentYear();
@@ -51,34 +78,40 @@ window.App = {};
             var m = _currentMonth();
             return new Date(y, m + 1, 0)
         };
-        var draw = function(){
-            $month = appendMonth();
-            $week = appendWeek($month);
-            $week = paddingBlankDay($week);
-            appendExistDay($month, $week)
+        var setNextMonth = function(){
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            return currentDate
+        };
+        var setPrevMonth = function(){
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            return currentDate
+        };
+        var draw = function(cal){
+            var month = appendMonth(cal);
+            var week = appendWeek(month);
+            week = paddingBlankDay(week);
+            appendExistDay(month, week)
         };
 
-        var $_month = $("<div class='cal-month'></div>");
-        var appendMonth = function(){
-            var dup = $_month.clone();
-            $calendar.append(dup);
-            return dup;
+        var appendMonth = function(cal){
+            var m = domParts.month();
+            cal.append(m);
+            return m;
         };
 
-        var $_week = $("<ul class=cal-week></ul>");
         var appendWeek = function($month){
-            var dup = $_week.clone();
-            $month.append(dup);
-            return dup;
+            var week = domParts.week();
+            $month.append(week);
+            return week;
         };
 
-        var $_day = $("<li class=cal-day></li>");
         var paddingBlankDay = function($week){
             for(var i = -(firstAtMonth().getDay()); i < 0; i++) {
-                $week.append($_day.clone());
+                $week.append(domParts.day("&nbsp;"));
             }
             return $week;
         };
+
         var appendExistDay = function($month, $week){
             var currentWeek = $week;
             for(var i = 1; i <= lastAtMonth().getDate(); i++) {
@@ -86,19 +119,9 @@ window.App = {};
                 if ((firstAtMonth().getDay() + i - 1) % 7 === 0) {
                     currentWeek = appendWeek($month);
                 }
-                var dup = $_day.clone();
-                dup.text(i);
-                currentWeek.append(dup);
+
+                currentWeek.append(domParts.day(i));
             }
         };
     };
-}($);
-
-calendar = new App.Calendar();
-
-$("#year").text(calendar.currentYear());
-$("#month").text(calendar.currentMonth());
-$("#day").text(calendar.currentDay());
-$("#wday").text(calendar.currentWday());
-
-calendar.attachCalendar($("#cal"));
+}(jQuery);

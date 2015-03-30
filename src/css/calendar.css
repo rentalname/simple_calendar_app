@@ -1,26 +1,23 @@
+@import url(http://fonts.googleapis.com/earlyaccess/notosanshebrew.css);
+
 #cal {
     color: #191919;
-    font-family: Verdana, Helvetica, sans serif;
+    font-family: 'Noto Sans Japanese', Verdana, Helvetica, sans serif;
     display: flex;
     flex-direction: column;
+    max-width: 640px;
+    box-shadow: 2px 0 2px rgba(0, 0, 0, 0.2), -2px 0 2px rgba(0, 0, 0, 0.2), 0 4px 2px rgba(0, 0, 0, 0.2);
 }
 
 #current_date {
     padding-left: 1em;
     line-height: 200%;
-    display: inline-flex;
     background-color: #d0d0d0;
-    box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.2);
 }
 
 .cal-month {
     display: inline-block;
     padding: 16px;
-    box-shadow: 2px 0 2px rgba(0, 0, 0, 0.2), -2px 0 2px rgba(0, 0, 0, 0.2), 0 4px 2px rgba(0, 0, 0, 0.2);
-}
-
-.cal-week {
-    display: flex;
 }
 
 .cal-week > .cal-day:first-child {
@@ -41,4 +38,14 @@
     background-color: #e8e8e8;
     box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.15);
     line-height: 3em;
+}
+
+#control {
+    font-size: 2.5em;
+    text-align: center;
+}
+
+#control .prev, #control .next {
+    font-size: inherit;
+    margin: 0 1em;
 }
